@@ -257,6 +257,28 @@
         .copy-snippet-btn:hover {
             background: #0369a1;
         }
+        .snippet-instruction {
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #14532d;
+        }
+        .snippet-instruction h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #15803d;
+        }
+        .snippet-instruction code {
+            background: #bbf7d0;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #14532d;
+        }
     </style>
 </head>
 <body>
@@ -287,7 +309,7 @@
         <div class="section">
             <h2>🔢 Filter Value Translations <span>translateValues + source</span></h2>
             <div class="tip">
-                💡 <strong>Note:</strong> Để tìm đúng Key <strong>Source</strong> của <strong>Filter Option</strong>, hãy mở console trình duyệt trên trang collection/search và gõ lệnh bên dưới.
+                💡 <strong>Note:</strong> Để tìm đúng <strong>key Source</strong> của <strong>Filter Option</strong>, hãy mở console trình duyệt trên trang collection/search và gõ lệnh bên dưới.
             </div>
             <div class="console-copy-area">
                 <span>Lệnh console:</span>
@@ -328,23 +350,27 @@
                 <span id="copyFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
             </div>
 
-            <!-- IMPLEMENTATION NOTE -->
+            <!-- NEW SNIPPET CREATION NOTE (right after code output) -->
+            <div class="snippet-instruction">
+                <h4>📁 Tạo snippet và dán mã</h4>
+                <p>1. Vào <strong>Snippets</strong> → <strong>Add a new snippet</strong> (tạo file mới).<br>
+                2. Đặt tên file: <code>flintverse-customize.liquid</code><br>
+                3. Dán toàn bộ mã đã tạo ở trên vào file này và lưu lại.</p>
+            </div>
+
+            <!-- IMPLEMENTATION GUIDE (revised) -->
             <div class="note-box" id="implementationNote">
-                <h4>📌 Cách thêm mã này vào theme</h4>
+                <h4>📌 Cách thêm snippet vào theme</h4>
                 <ol>
-                    <li><strong>Thêm snippet vào layout theme</strong><br>
-                        Mở file: <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code><br>
+                    <li><strong>Mở file layout</strong><br>
+                        Đi đến <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code>.</li>
+                    <li><strong>Thêm dòng include</strong><br>
                         Add the following line where global scripts or custom snippets are usually placed:<br>
-                        <code>{% render 'flintverse-customize' %}</code>
-                    </li>
-                    <li><strong>Đối với các store đã được tùy chỉnh</strong><br>
-                        Snippet <code>flintverse-customize.liquid</code> đã có sẵn trong theme. Bạn có thể thêm mã tùy chỉnh (JS, CSS) trực tiếp vào snippet đó.
-                    </li>
-                    <li><strong>Để tắt / gỡ bỏ tính năng này</strong><br>
-                        Chỉ cần xóa dòng sau khỏi <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code>:<br>
-                        <code>{% render 'flintverse-customize' %}</code><br>
-                        Không cần thay đổi gì thêm.
-                    </li>
+                        <code>{% render 'flintverse-customize' %}</code></li>
+                    <li><strong>Đối với store đã được tùy chỉnh sẵn</strong><br>
+                        Snippet <code>flintverse-customize.liquid</code> đã tồn tại. Bạn chỉ cần mở file đó và dán thêm mã mới vào.</li>
+                    <li><strong>Để tắt / gỡ bỏ</strong><br>
+                        Xóa dòng <code>{% render 'flintverse-customize' %}</code> khỏi layout. Không cần thay đổi gì khác.</li>
                 </ol>
                 <button class="btn copy-snippet-btn" id="copyNoteBtn">📋 Sao chép {% render 'flintverse-customize' %}</button>
                 <span id="copyNoteFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
