@@ -68,6 +68,21 @@
             font-family: monospace;
             color: #92400e;
         }
+        .tip .copy-console-btn {
+            background: none;
+            border: 1px solid #d97706;
+            color: #92400e;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: 0.2s;
+        }
+        .tip .copy-console-btn:hover {
+            background: #fde68a;
+            border-color: #b45309;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -241,7 +256,10 @@
             <h2>🔢 Filter Value Translations <span>translateValues + source</span></h2>
             <div class="tip">
                 💡 <strong>Tip:</strong> To find the correct <strong>Filter Source</strong> key, open the browser console on your collection/search page and type:<br>
-                <code>window.rdSearchFilters.filters</code> – then look at the <code>source</code> property of each filter object (e.g., <code>"availability"</code>, <code>"vendor"</code>, <code>"price"</code>).
+                <code>window.rdSearchFilters.filters</code>
+                <button class="copy-console-btn" id="copyConsoleCmd">📋 Copy</button>
+                <span id="consoleCmdFeedback" style="margin-left: 0.5rem; color: #10b981; font-weight: 500; display: none;">Copied!</span>
+                – then look at the <code>source</code> property of each filter object (e.g., <code>"availability"</code>, <code>"vendor"</code>, <code>"price"</code>).
             </div>
             <table id="valueTable">
                 <thead>
@@ -315,6 +333,8 @@
             const copyFeedback = document.getElementById('copyFeedback');
             const copyNoteBtn = document.getElementById('copyNoteBtn');
             const copyNoteFeedback = document.getElementById('copyNoteFeedback');
+            const copyConsoleCmd = document.getElementById('copyConsoleCmd');
+            const consoleCmdFeedback = document.getElementById('consoleCmdFeedback');
 
             // ---- Render functions ----
             function renderLabelRows() {
@@ -478,13 +498,14 @@
                     sourceBlocks += `        });\n\n`;
                 });
 
+                // Renamed parameter to "value" for consistency
                 const code = `{% if template.name == 'collection' or template.name == 'search' %}
 <script>
-    function translateValues(category) {
-        switch (category) {
+    function translateValues(value) {
+        switch (value) {
 ${valueCases || '            // no value translations added\n'}
             default:
-                return category;
+                return value;
         }
     }
     function translateLabelFilter(label) {
@@ -562,6 +583,16 @@ ${sourceBlocks || '        // no value sources specified\n'}
                 const snippetInclude = "{% render 'flintverse-customize' %}";
                 copyToClipboard(snippetInclude).then(() => {
                     showFeedback(copyNoteFeedback);
+                }).catch(() => {
+                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                });
+            });
+
+            // ---- Copy console command ----
+            copyConsoleCmd.addEventListener('click', () => {
+                const consoleCmd = "window.rdSearchFilters.filters";
+                copyToClipboard(consoleCmd).then(() => {
+                    showFeedback(consoleCmdFeedback);
                 }).catch(() => {
                     alert('Unable to copy automatically. Please select the text and copy manually.');
                 });
