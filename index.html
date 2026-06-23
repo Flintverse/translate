@@ -286,6 +286,47 @@
             margin-bottom: 1rem;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .guide-image:hover {
+            opacity: 0.9;
+        }
+        /* Lightbox Modal */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+        .lightbox-close:hover {
+            color: #ccc;
         }
     </style>
 </head>
@@ -319,8 +360,8 @@
             <div class="tip">
                 💡 <strong>Note:</strong> Để tìm đúng <strong>key Source</strong> của <strong>Filter Option</strong>, hãy mở console trình duyệt trên trang collection/search và gõ lệnh bên dưới.
             </div>
-            <!-- Hình ảnh hướng dẫn -->
-            <img src="Filter_value.png" alt="Hướng dẫn tìm Source trong console" class="guide-image" />
+            <!-- Hình ảnh hướng dẫn có thể click để phóng to -->
+            <img src="Filter_value.png" alt="Hướng dẫn tìm Source trong console" class="guide-image" id="guideImage" />
             
             <div class="console-copy-area">
                 <span>Lệnh console:</span>
@@ -389,6 +430,12 @@
         </div>
     </div>
 
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" id="lightboxClose">&times;</span>
+        <img id="lightboxImg" class="lightbox-img" src="" alt="Ảnh phóng to" />
+    </div>
+
     <script>
         (function() {
             let labelRows = [];
@@ -407,6 +454,35 @@
             const copyNoteFeedback = document.getElementById('copyNoteFeedback');
             const copyConsoleCmd = document.getElementById('copyConsoleCmd');
             const consoleCmdFeedback = document.getElementById('consoleCmdFeedback');
+
+            // Lightbox elements
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightboxImg');
+            const lightboxClose = document.getElementById('lightboxClose');
+            const guideImage = document.getElementById('guideImage');
+
+            // Lightbox functionality
+            guideImage.addEventListener('click', function() {
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+            });
+
+            lightboxClose.addEventListener('click', function() {
+                lightbox.classList.remove('active');
+            });
+
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                }
+            });
+
+            // Close lightbox on ESC key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                    lightbox.classList.remove('active');
+                }
+            });
 
             function renderLabelRows() {
                 labelBody.innerHTML = '';
