@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,15 +24,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             padding: 2rem;
         }
-        h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: #0f172a;
-        }
-        .subtitle {
-            color: #64748b;
-            margin-bottom: 2rem;
-        }
         .section {
             margin-bottom: 2.5rem;
         }
@@ -52,6 +43,15 @@
             font-weight: normal;
             color: #475569;
         }
+        .note {
+            background: #e0f2fe;
+            border-left: 4px solid #0284c7;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #0c4a6e;
+        }
         .tip {
             background: #fef3c7;
             border-left: 4px solid #f59e0b;
@@ -68,20 +68,51 @@
             font-family: monospace;
             color: #92400e;
         }
-        .tip .copy-console-btn {
-            background: none;
-            border: 1px solid #d97706;
-            color: #92400e;
-            padding: 0.15rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
+        .console-copy-area {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .console-copy-area span:first-child {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #334155;
+        }
+        .console-copy-area code {
+            background: #f1f5f9;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-copy-console {
+            background: #f59e0b;
+            color: #ffffff;
+            padding: 0.35rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
             cursor: pointer;
-            margin-left: 0.5rem;
+            border: none;
+            font-weight: 500;
             transition: 0.2s;
         }
-        .tip .copy-console-btn:hover {
-            background: #fde68a;
-            border-color: #b45309;
+        .btn-copy-console:hover {
+            background: #d97706;
+        }
+        .console-explanation {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        .console-explanation code {
+            background: #f1f5f9;
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            font-family: monospace;
         }
         table {
             width: 100%;
@@ -230,16 +261,17 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔧 Findter Filter Translation Code Generator</h1>
-        <p class="subtitle">Enter your translations for filter option labels and filter values. Then generate the complete Liquid/JS snippet to paste into your theme.</p>
 
         <!-- FILTER OPTION LABEL TRANSLATIONS -->
         <div class="section">
             <h2>🏷️ Filter Option Label Translations <span>translateLabelFilter</span></h2>
+            <div class="note">
+                📌 Lưu ý: Không cần tìm source cho phần này.
+            </div>
             <table id="labelTable">
                 <thead>
                     <tr>
-                        <th style="width: 45%">Original (English)</th>
+                        <th style="width: 45%">Filter Label (English)</th>
                         <th style="width: 45%">Translated</th>
                         <th style="width: 10%"></th>
                     </tr>
@@ -248,24 +280,29 @@
                     <!-- dynamic rows -->
                 </tbody>
             </table>
-            <button class="btn btn-add" id="addLabelRow">+ Add Label Translation</button>
+            <button class="btn btn-add" id="addLabelRow">+ Thêm bản dịch nhãn</button>
         </div>
 
-        <!-- VALUE TRANSLATIONS -->
+        <!-- FILTER VALUE TRANSLATIONS -->
         <div class="section">
             <h2>🔢 Filter Value Translations <span>translateValues + source</span></h2>
             <div class="tip">
-                💡 <strong>Tip:</strong> To find the correct <strong>Filter Source</strong> key, open the browser console on your collection/search page and type:<br>
+                💡 <strong>Mẹo:</strong> Để tìm đúng khóa <strong>Filter Source</strong> của <strong>Filter Option</strong>, hãy mở console trình duyệt trên trang collection/search và gõ lệnh bên dưới.
+            </div>
+            <div class="console-copy-area">
+                <span>Lệnh console:</span>
                 <code>window.rdSearchFilters.filters</code>
-                <button class="copy-console-btn" id="copyConsoleCmd">📋 Copy</button>
-                <span id="consoleCmdFeedback" style="margin-left: 0.5rem; color: #10b981; font-weight: 500; display: none;">Copied!</span>
-                – then look at the <code>source</code> property of each filter object (e.g., <code>"availability"</code>, <code>"vendor"</code>, <code>"price"</code>).
+                <button class="btn-copy-console" id="copyConsoleCmd">📋 Sao chép</button>
+                <span id="consoleCmdFeedback" style="color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
+            </div>
+            <div class="console-explanation">
+                – sau đó kiểm tra thuộc tính <code>source</code> của mỗi filter object (ví dụ: <code>"availability"</code>, <code>"vendor"</code>).
             </div>
             <table id="valueTable">
                 <thead>
                     <tr>
-                        <th style="width: 25%">Filter Source</th>
-                        <th style="width: 30%">Original Value</th>
+                        <th style="width: 25%">Filter Source of Filter Option</th>
+                        <th style="width: 30%">Filter Value</th>
                         <th style="width: 30%">Translated</th>
                         <th style="width: 15%"></th>
                     </tr>
@@ -274,54 +311,52 @@
                     <!-- dynamic rows -->
                 </tbody>
             </table>
-            <button class="btn btn-add" id="addValueRow">+ Add Value Translation</button>
+            <button class="btn btn-add" id="addValueRow">+ Thêm bản dịch giá trị</button>
         </div>
 
         <!-- GENERATE BUTTON -->
         <div class="flex">
-            <button class="btn btn-generate" id="generateBtn">⚡ Generate Code</button>
-            <button class="btn btn-danger" id="clearBtn">🗑️ Clear All</button>
+            <button class="btn btn-generate" id="generateBtn">⚡ Tạo mã</button>
+            <button class="btn btn-danger" id="clearBtn">🗑️ Xóa tất cả</button>
         </div>
 
         <!-- OUTPUT -->
         <div class="output-area">
-            <textarea id="outputCode" readonly placeholder="Generated code will appear here..."></textarea>
+            <textarea id="outputCode" readonly placeholder="Mã được tạo sẽ hiển thị ở đây..."></textarea>
             <div style="margin-top: 0.5rem;">
-                <button class="btn btn-copy" id="copyBtn">📋 Copy to Clipboard</button>
-                <span id="copyFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Copied!</span>
+                <button class="btn btn-copy" id="copyBtn">📋 Sao chép vào clipboard</button>
+                <span id="copyFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
             </div>
 
             <!-- IMPLEMENTATION NOTE -->
             <div class="note-box" id="implementationNote">
-                <h4>📌 How to add this code to your theme</h4>
+                <h4>📌 Cách thêm mã này vào theme</h4>
                 <ol>
-                    <li><strong>Include snippet in theme layout</strong><br>
-                        Open the file: <code>sections/header.liquid</code> or <code>layout/theme.liquid</code><br>
-                        Add the following line where global scripts or custom snippets are usually placed:<br>
+                    <li><strong>Thêm snippet vào layout theme</strong><br>
+                        Mở file: <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code><br>
+                        Thêm dòng sau vào nơi thường đặt script toàn cục hoặc snippet tùy chỉnh:<br>
                         <code>{% render 'flintverse-customize' %}</code>
                     </li>
-                    <li><strong>For stores we already customized</strong><br>
-                        The snippet <code>flintverse-customize.liquid</code> already exists in your theme. You can add more custom code (JS, CSS) directly into that snippet.
+                    <li><strong>Đối với các store đã được tùy chỉnh</strong><br>
+                        Snippet <code>flintverse-customize.liquid</code> đã có sẵn trong theme. Bạn có thể thêm mã tùy chỉnh (JS, CSS) trực tiếp vào snippet đó.
                     </li>
-                    <li><strong>To disable / remove this custom feature</strong><br>
-                        Simply delete the following line from <code>sections/header.liquid</code> or <code>layout/theme.liquid</code>:<br>
+                    <li><strong>Để tắt / gỡ bỏ tính năng này</strong><br>
+                        Chỉ cần xóa dòng sau khỏi <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code>:<br>
                         <code>{% render 'flintverse-customize' %}</code><br>
-                        No other changes are required.
+                        Không cần thay đổi gì thêm.
                     </li>
                 </ol>
-                <button class="btn copy-snippet-btn" id="copyNoteBtn">📋 Copy {% render 'flintverse-customize' %}</button>
-                <span id="copyNoteFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Copied!</span>
+                <button class="btn copy-snippet-btn" id="copyNoteBtn">📋 Sao chép {% render 'flintverse-customize' %}</button>
+                <span id="copyNoteFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
             </div>
         </div>
     </div>
 
     <script>
         (function() {
-            // Data storage
             let labelRows = [];
             let valueRows = [];
 
-            // DOM elements
             const labelBody = document.getElementById('labelBody');
             const valueBody = document.getElementById('valueBody');
             const addLabelBtn = document.getElementById('addLabelRow');
@@ -336,18 +371,17 @@
             const copyConsoleCmd = document.getElementById('copyConsoleCmd');
             const consoleCmdFeedback = document.getElementById('consoleCmdFeedback');
 
-            // ---- Render functions ----
             function renderLabelRows() {
                 labelBody.innerHTML = '';
                 if (labelRows.length === 0) {
-                    labelBody.innerHTML = '<tr><td colspan="3" class="empty-message">No label translations added yet.</td></tr>';
+                    labelBody.innerHTML = '<tr><td colspan="3" class="empty-message">Chưa có bản dịch nhãn nào.</td></tr>';
                     return;
                 }
                 labelRows.forEach((row, idx) => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><input type="text" class="label-original" value="${escapeHtml(row.original)}" placeholder="e.g. Availability" data-index="${idx}"></td>
-                        <td><input type="text" class="label-translated" value="${escapeHtml(row.translated)}" placeholder="e.g. 在庫状況" data-index="${idx}"></td>
+                        <td><input type="text" class="label-original" value="${escapeHtml(row.original)}" placeholder="ví dụ: Availability" data-index="${idx}"></td>
+                        <td><input type="text" class="label-translated" value="${escapeHtml(row.translated)}" placeholder="ví dụ: 在庫状況" data-index="${idx}"></td>
                         <td class="row-actions"><button class="btn btn-danger delete-label" data-index="${idx}">✕</button></td>
                     `;
                     labelBody.appendChild(tr);
@@ -358,15 +392,15 @@
             function renderValueRows() {
                 valueBody.innerHTML = '';
                 if (valueRows.length === 0) {
-                    valueBody.innerHTML = '<tr><td colspan="4" class="empty-message">No value translations added yet.</td></tr>';
+                    valueBody.innerHTML = '<tr><td colspan="4" class="empty-message">Chưa có bản dịch giá trị nào.</td></tr>';
                     return;
                 }
                 valueRows.forEach((row, idx) => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><input type="text" class="value-source" value="${escapeHtml(row.source)}" placeholder="e.g. availability" data-index="${idx}"></td>
-                        <td><input type="text" class="value-original" value="${escapeHtml(row.original)}" placeholder="e.g. In Stock" data-index="${idx}"></td>
-                        <td><input type="text" class="value-translated" value="${escapeHtml(row.translated)}" placeholder="e.g. 在庫あり" data-index="${idx}"></td>
+                        <td><input type="text" class="value-source" value="${escapeHtml(row.source)}" placeholder="ví dụ: availability" data-index="${idx}"></td>
+                        <td><input type="text" class="value-original" value="${escapeHtml(row.original)}" placeholder="ví dụ: In Stock" data-index="${idx}"></td>
+                        <td><input type="text" class="value-translated" value="${escapeHtml(row.translated)}" placeholder="ví dụ: 在庫あり" data-index="${idx}"></td>
                         <td class="row-actions"><button class="btn btn-danger delete-value" data-index="${idx}">✕</button></td>
                     `;
                     valueBody.appendChild(tr);
@@ -434,7 +468,6 @@
                 });
             }
 
-            // ---- Add / Clear ----
             addLabelBtn.addEventListener('click', () => {
                 labelRows.push({ original: '', translated: '' });
                 renderLabelRows();
@@ -450,7 +483,7 @@
             });
 
             clearBtn.addEventListener('click', () => {
-                if (confirm('Clear all translation data?')) {
+                if (confirm('Xóa tất cả dữ liệu dịch?')) {
                     labelRows = [];
                     valueRows = [];
                     renderLabelRows();
@@ -459,7 +492,6 @@
                 }
             });
 
-            // ---- Generate Code ----
             function generateCode() {
                 const validLabels = labelRows.filter(r => r.original.trim() !== '' && r.translated.trim() !== '');
                 const validValues = valueRows.filter(r => r.source.trim() !== '' && r.original.trim() !== '' && r.translated.trim() !== '');
@@ -498,7 +530,6 @@
                     sourceBlocks += `        });\n\n`;
                 });
 
-                // Renamed parameter to "value" for consistency
                 const code = `{% if template.name == 'collection' or template.name == 'search' %}
 <script>
     function translateValues(value) {
@@ -520,12 +551,12 @@ ${labelCases || '            // no label translations added\n'}
         const filters = window.rdSearchFilters?.filters ?? [];
         if (filters.length == 0) return;
 
-        // Translate filter group labels
+        // Translate filter option labels
         filters.map(filter => {
             filter.label = translateLabelFilter(filter.label);
         });
 
-        // Translate filter values per source
+        // Translate filter values by source
 ${sourceBlocks || '        // no value sources specified\n'}
     });
 <\/script>
@@ -534,7 +565,6 @@ ${sourceBlocks || '        // no value sources specified\n'}
                 outputCode.value = code;
             }
 
-            // ---- Robust clipboard copy ----
             function copyToClipboard(text) {
                 if (navigator.clipboard && window.isSecureContext) {
                     return navigator.clipboard.writeText(text);
@@ -574,38 +604,32 @@ ${sourceBlocks || '        // no value sources specified\n'}
                 copyToClipboard(outputCode.value).then(() => {
                     showFeedback(copyFeedback);
                 }).catch(() => {
-                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                    alert('Không thể sao chép tự động. Vui lòng chọn và sao chép thủ công.');
                 });
             });
 
-            // ---- Copy snippet include line ----
             copyNoteBtn.addEventListener('click', () => {
                 const snippetInclude = "{% render 'flintverse-customize' %}";
                 copyToClipboard(snippetInclude).then(() => {
                     showFeedback(copyNoteFeedback);
                 }).catch(() => {
-                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                    alert('Không thể sao chép tự động. Vui lòng chọn và sao chép thủ công.');
                 });
             });
 
-            // ---- Copy console command ----
             copyConsoleCmd.addEventListener('click', () => {
                 const consoleCmd = "window.rdSearchFilters.filters";
                 copyToClipboard(consoleCmd).then(() => {
                     showFeedback(consoleCmdFeedback);
                 }).catch(() => {
-                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                    alert('Không thể sao chép tự động. Vui lòng chọn và sao chép thủ công.');
                 });
             });
 
-            // ---- Initial example rows ----
-            labelRows.push({ original: 'Availability', translated: '在庫状況' });
-            labelRows.push({ original: 'Price', translated: '価格' });
-            valueRows.push({ source: 'availability', original: 'In Stock', translated: '在庫あり' });
-            valueRows.push({ source: 'availability', original: 'Out of Stock', translated: '在庫切れ' });
+            // Initial empty state
             renderLabelRows();
             renderValueRows();
-            generateCode();
+            // No auto-generate code
         })();
     </script>
 </body>
