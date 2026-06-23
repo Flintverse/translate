@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Findter Filter Translation Code Generator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+        }
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+        }
+        .subtitle {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        .section h2 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #334155;
+        }
+        .section h2 span {
+            background: #e2e8f0;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: normal;
+            color: #475569;
+        }
+        .tip {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 0.6rem 1rem;
+            margin-bottom: 1rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: #92400e;
+        }
+        .tip code {
+            background: #fde68a;
+            padding: 0.15rem 0.35rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #92400e;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+        th {
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #475569;
+            padding: 0.5rem 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        td {
+            padding: 0.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            background: #ffffff;
+        }
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+        .btn-add {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-add:hover {
+            background: #2563eb;
+        }
+        .btn-danger {
+            background: #f1f5f9;
+            color: #dc2626;
+        }
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+        .btn-generate {
+            background: #0f172a;
+            color: white;
+            padding: 0.75rem 2rem;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        .btn-generate:hover {
+            background: #1e293b;
+        }
+        .btn-copy {
+            background: #10b981;
+            color: white;
+            margin-left: 0.5rem;
+        }
+        .btn-copy:hover {
+            background: #059669;
+        }
+        .output-area {
+            margin-top: 1.5rem;
+        }
+        textarea {
+            width: 100%;
+            height: 380px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            padding: 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+            resize: vertical;
+        }
+        .flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .row-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+        }
+        .empty-message {
+            color: #94a3b8;
+            font-style: italic;
+            padding: 0.5rem 0;
+        }
+        .note-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #0c4a6e;
+        }
+        .note-box h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #0369a1;
+        }
+        .note-box ol {
+            padding-left: 1.5rem;
+        }
+        .note-box li {
+            margin-bottom: 0.5rem;
+        }
+        .note-box code {
+            background: #e0f2fe;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #0c4a6e;
+        }
+        .copy-snippet-btn {
+            background: #0284c7;
+            color: white;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+        }
+        .copy-snippet-btn:hover {
+            background: #0369a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Findter Filter Translation Code Generator</h1>
+        <p class="subtitle">Enter your translations for filter option labels and filter values. Then generate the complete Liquid/JS snippet to paste into your theme.</p>
+
+        <!-- FILTER OPTION LABEL TRANSLATIONS -->
+        <div class="section">
+            <h2>🏷️ Filter Option Label Translations <span>translateLabelFilter</span></h2>
+            <table id="labelTable">
+                <thead>
+                    <tr>
+                        <th style="width: 45%">Original (English)</th>
+                        <th style="width: 45%">Translated</th>
+                        <th style="width: 10%"></th>
+                    </tr>
+                </thead>
+                <tbody id="labelBody">
+                    <!-- dynamic rows -->
+                </tbody>
+            </table>
+            <button class="btn btn-add" id="addLabelRow">+ Add Label Translation</button>
+        </div>
+
+        <!-- VALUE TRANSLATIONS -->
+        <div class="section">
+            <h2>🔢 Filter Value Translations <span>translateValues + source</span></h2>
+            <div class="tip">
+                💡 <strong>Tip:</strong> To find the correct <strong>Filter Source</strong> key, open the browser console on your collection/search page and type:<br>
+                <code>window.rdSearchFilters.filters</code> – then look at the <code>source</code> property of each filter object (e.g., <code>"availability"</code>, <code>"vendor"</code>, <code>"price"</code>).
+            </div>
+            <table id="valueTable">
+                <thead>
+                    <tr>
+                        <th style="width: 25%">Filter Source</th>
+                        <th style="width: 30%">Original Value</th>
+                        <th style="width: 30%">Translated</th>
+                        <th style="width: 15%"></th>
+                    </tr>
+                </thead>
+                <tbody id="valueBody">
+                    <!-- dynamic rows -->
+                </tbody>
+            </table>
+            <button class="btn btn-add" id="addValueRow">+ Add Value Translation</button>
+        </div>
+
+        <!-- GENERATE BUTTON -->
+        <div class="flex">
+            <button class="btn btn-generate" id="generateBtn">⚡ Generate Code</button>
+            <button class="btn btn-danger" id="clearBtn">🗑️ Clear All</button>
+        </div>
+
+        <!-- OUTPUT -->
+        <div class="output-area">
+            <textarea id="outputCode" readonly placeholder="Generated code will appear here..."></textarea>
+            <div style="margin-top: 0.5rem;">
+                <button class="btn btn-copy" id="copyBtn">📋 Copy to Clipboard</button>
+                <span id="copyFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Copied!</span>
+            </div>
+
+            <!-- IMPLEMENTATION NOTE -->
+            <div class="note-box" id="implementationNote">
+                <h4>📌 How to add this code to your theme</h4>
+                <ol>
+                    <li><strong>Include snippet in theme layout</strong><br>
+                        Open the file: <code>sections/header.liquid</code> or <code>layout/theme.liquid</code><br>
+                        Add the following line where global scripts or custom snippets are usually placed:<br>
+                        <code>{% render 'flintverse-customize' %}</code>
+                    </li>
+                    <li><strong>For stores we already customized</strong><br>
+                        The snippet <code>flintverse-customize.liquid</code> already exists in your theme. You can add more custom code (JS, CSS) directly into that snippet.
+                    </li>
+                    <li><strong>To disable / remove this custom feature</strong><br>
+                        Simply delete the following line from <code>sections/header.liquid</code> or <code>layout/theme.liquid</code>:<br>
+                        <code>{% render 'flintverse-customize' %}</code><br>
+                        No other changes are required.
+                    </li>
+                </ol>
+                <button class="btn copy-snippet-btn" id="copyNoteBtn">📋 Copy {% render 'flintverse-customize' %}</button>
+                <span id="copyNoteFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Copied!</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Data storage
+            let labelRows = [];
+            let valueRows = [];
+
+            // DOM elements
+            const labelBody = document.getElementById('labelBody');
+            const valueBody = document.getElementById('valueBody');
+            const addLabelBtn = document.getElementById('addLabelRow');
+            const addValueBtn = document.getElementById('addValueRow');
+            const generateBtn = document.getElementById('generateBtn');
+            const clearBtn = document.getElementById('clearBtn');
+            const outputCode = document.getElementById('outputCode');
+            const copyBtn = document.getElementById('copyBtn');
+            const copyFeedback = document.getElementById('copyFeedback');
+            const copyNoteBtn = document.getElementById('copyNoteBtn');
+            const copyNoteFeedback = document.getElementById('copyNoteFeedback');
+
+            // ---- Render functions ----
+            function renderLabelRows() {
+                labelBody.innerHTML = '';
+                if (labelRows.length === 0) {
+                    labelBody.innerHTML = '<tr><td colspan="3" class="empty-message">No label translations added yet.</td></tr>';
+                    return;
+                }
+                labelRows.forEach((row, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="text" class="label-original" value="${escapeHtml(row.original)}" placeholder="e.g. Availability" data-index="${idx}"></td>
+                        <td><input type="text" class="label-translated" value="${escapeHtml(row.translated)}" placeholder="e.g. 在庫状況" data-index="${idx}"></td>
+                        <td class="row-actions"><button class="btn btn-danger delete-label" data-index="${idx}">✕</button></td>
+                    `;
+                    labelBody.appendChild(tr);
+                });
+                attachLabelEvents();
+            }
+
+            function renderValueRows() {
+                valueBody.innerHTML = '';
+                if (valueRows.length === 0) {
+                    valueBody.innerHTML = '<tr><td colspan="4" class="empty-message">No value translations added yet.</td></tr>';
+                    return;
+                }
+                valueRows.forEach((row, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><input type="text" class="value-source" value="${escapeHtml(row.source)}" placeholder="e.g. availability" data-index="${idx}"></td>
+                        <td><input type="text" class="value-original" value="${escapeHtml(row.original)}" placeholder="e.g. In Stock" data-index="${idx}"></td>
+                        <td><input type="text" class="value-translated" value="${escapeHtml(row.translated)}" placeholder="e.g. 在庫あり" data-index="${idx}"></td>
+                        <td class="row-actions"><button class="btn btn-danger delete-value" data-index="${idx}">✕</button></td>
+                    `;
+                    valueBody.appendChild(tr);
+                });
+                attachValueEvents();
+            }
+
+            function escapeHtml(text) {
+                return String(text).replace(/[&<>"']/g, function(m) {
+                    if (m === '&') return '&amp;';
+                    if (m === '<') return '&lt;';
+                    if (m === '>') return '&gt;';
+                    if (m === '"') return '&quot;';
+                    if (m === "'") return '&#039;';
+                });
+            }
+
+            function attachLabelEvents() {
+                document.querySelectorAll('.label-original').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const idx = this.dataset.index;
+                        labelRows[idx].original = this.value;
+                    });
+                });
+                document.querySelectorAll('.label-translated').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const idx = this.dataset.index;
+                        labelRows[idx].translated = this.value;
+                    });
+                });
+                document.querySelectorAll('.delete-label').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.index);
+                        labelRows.splice(idx, 1);
+                        renderLabelRows();
+                    });
+                });
+            }
+
+            function attachValueEvents() {
+                document.querySelectorAll('.value-source').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const idx = this.dataset.index;
+                        valueRows[idx].source = this.value;
+                    });
+                });
+                document.querySelectorAll('.value-original').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const idx = this.dataset.index;
+                        valueRows[idx].original = this.value;
+                    });
+                });
+                document.querySelectorAll('.value-translated').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const idx = this.dataset.index;
+                        valueRows[idx].translated = this.value;
+                    });
+                });
+                document.querySelectorAll('.delete-value').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(this.dataset.index);
+                        valueRows.splice(idx, 1);
+                        renderValueRows();
+                    });
+                });
+            }
+
+            // ---- Add / Clear ----
+            addLabelBtn.addEventListener('click', () => {
+                labelRows.push({ original: '', translated: '' });
+                renderLabelRows();
+                const lastInput = labelBody.querySelector('tr:last-child .label-original');
+                if (lastInput) lastInput.focus();
+            });
+
+            addValueBtn.addEventListener('click', () => {
+                valueRows.push({ source: '', original: '', translated: '' });
+                renderValueRows();
+                const lastInput = valueBody.querySelector('tr:last-child .value-source');
+                if (lastInput) lastInput.focus();
+            });
+
+            clearBtn.addEventListener('click', () => {
+                if (confirm('Clear all translation data?')) {
+                    labelRows = [];
+                    valueRows = [];
+                    renderLabelRows();
+                    renderValueRows();
+                    outputCode.value = '';
+                }
+            });
+
+            // ---- Generate Code ----
+            function generateCode() {
+                const validLabels = labelRows.filter(r => r.original.trim() !== '' && r.translated.trim() !== '');
+                const validValues = valueRows.filter(r => r.source.trim() !== '' && r.original.trim() !== '' && r.translated.trim() !== '');
+
+                let labelCases = '';
+                validLabels.forEach(r => {
+                    labelCases += `            case "${r.original.trim()}":\n                return "${r.translated.trim()}";\n`;
+                });
+
+                let valueCases = '';
+                const valueMap = new Map();
+                validValues.forEach(r => {
+                    valueMap.set(r.original.trim(), r.translated.trim());
+                });
+                valueMap.forEach((trans, orig) => {
+                    valueCases += `            case "${orig}":\n                return "${trans}";\n`;
+                });
+
+                const sourceGroups = new Map();
+                validValues.forEach(r => {
+                    const src = r.source.trim();
+                    if (!sourceGroups.has(src)) sourceGroups.set(src, []);
+                });
+
+                function sanitizeVarName(str) {
+                    return str.replace(/[^a-zA-Z0-9]/g, '_') || 'filter';
+                }
+
+                let sourceBlocks = '';
+                sourceGroups.forEach((_, source) => {
+                    const varName = sanitizeVarName(source) + 'Filter';
+                    sourceBlocks += `        // source: ${source}\n`;
+                    sourceBlocks += `        const ${varName} = (window.rdSearchFilters?.filters ?? []).find(filter => filter.source === '${source}');\n`;
+                    sourceBlocks += `        (${varName}?.values ?? []).map(value => {\n`;
+                    sourceBlocks += `            value.label = translateValues(value.label);\n`;
+                    sourceBlocks += `        });\n\n`;
+                });
+
+                const code = `{% if template.name == 'collection' or template.name == 'search' %}
+<script>
+    function translateValues(category) {
+        switch (category) {
+${valueCases || '            // no value translations added\n'}
+            default:
+                return category;
+        }
+    }
+    function translateLabelFilter(label) {
+        switch (label) {
+${labelCases || '            // no label translations added\n'}
+            default:
+                return label;
+        }
+    }
+    document.addEventListener('findter-sidebar-render-before', () => {
+        // window.rdSearchFilters.filters để lấy key (original comment)
+        const filters = window.rdSearchFilters?.filters ?? [];
+        if (filters.length == 0) return;
+
+        // Translate filter group labels
+        filters.map(filter => {
+            filter.label = translateLabelFilter(filter.label);
+        });
+
+        // Translate filter values per source
+${sourceBlocks || '        // no value sources specified\n'}
+    });
+<\/script>
+{% endif %}`;
+
+                outputCode.value = code;
+            }
+
+            // ---- Robust clipboard copy ----
+            function copyToClipboard(text) {
+                if (navigator.clipboard && window.isSecureContext) {
+                    return navigator.clipboard.writeText(text);
+                }
+                return new Promise((resolve, reject) => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-9999px';
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        const success = document.execCommand('copy');
+                        if (success) {
+                            resolve();
+                        } else {
+                            reject(new Error('execCommand failed'));
+                        }
+                    } catch (err) {
+                        reject(err);
+                    } finally {
+                        document.body.removeChild(textArea);
+                    }
+                });
+            }
+
+            function showFeedback(element) {
+                element.style.display = 'inline';
+                setTimeout(() => { element.style.display = 'none'; }, 2000);
+            }
+
+            generateBtn.addEventListener('click', generateCode);
+
+            copyBtn.addEventListener('click', () => {
+                if (!outputCode.value) return;
+                copyToClipboard(outputCode.value).then(() => {
+                    showFeedback(copyFeedback);
+                }).catch(() => {
+                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                });
+            });
+
+            // ---- Copy snippet include line ----
+            copyNoteBtn.addEventListener('click', () => {
+                const snippetInclude = "{% render 'flintverse-customize' %}";
+                copyToClipboard(snippetInclude).then(() => {
+                    showFeedback(copyNoteFeedback);
+                }).catch(() => {
+                    alert('Unable to copy automatically. Please select the text and copy manually.');
+                });
+            });
+
+            // ---- Initial example rows ----
+            labelRows.push({ original: 'Availability', translated: '在庫状況' });
+            labelRows.push({ original: 'Price', translated: '価格' });
+            valueRows.push({ source: 'availability', original: 'In Stock', translated: '在庫あり' });
+            valueRows.push({ source: 'availability', original: 'Out of Stock', translated: '在庫切れ' });
+            renderLabelRows();
+            renderValueRows();
+            generateCode();
+        })();
+    </script>
+</body>
+</html>
