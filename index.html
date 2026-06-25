@@ -5,744 +5,367 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Findter Filter Translation Code Generator</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fb;
-            color: #1e293b;
-            padding: 2rem;
-        }
-        .container {
-            max-width: 960px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            padding: 2rem;
-        }
-        .section {
-            margin-bottom: 2.5rem;
-        }
-        .section h2 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: #334155;
-        }
-        .section h2 span {
-            background: #e2e8f0;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: normal;
-            color: #475569;
-        }
-        .note {
-            background: #e0f2fe;
-            border-left: 4px solid #0284c7;
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: #0c4a6e;
-        }
-        .tip {
-            background: #fef3c7;
-            border-left: 4px solid #f59e0b;
-            padding: 0.6rem 1rem;
-            margin-bottom: 1rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: #92400e;
-        }
-        .tip code {
-            background: #fde68a;
-            padding: 0.15rem 0.35rem;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #92400e;
-        }
-        .console-copy-area {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            margin-bottom: 0.75rem;
-            flex-wrap: wrap;
-        }
-        .console-copy-area span:first-child {
-            font-size: 0.9rem;
-            font-weight: 500;
-            color: #334155;
-        }
-        .console-copy-area code {
-            background: #f1f5f9;
-            padding: 0.3rem 0.6rem;
-            border-radius: 6px;
-            font-family: monospace;
-            font-size: 0.9rem;
-            border: 1px solid #cbd5e1;
-        }
-        .btn-copy-console {
-            background: #f59e0b;
-            color: #ffffff;
-            padding: 0.35rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border: none;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-        .btn-copy-console:hover {
-            background: #d97706;
-        }
-        .console-explanation {
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-        .console-explanation code {
-            background: #f1f5f9;
-            padding: 0.15rem 0.35rem;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 1rem;
-        }
-        th {
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #475569;
-            padding: 0.5rem 0.5rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        td {
-            padding: 0.5rem;
-            vertical-align: middle;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        input {
-            width: 100%;
-            padding: 0.6rem 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: 0.2s;
-            background: #ffffff;
-        }
-        input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.5rem 1.2rem;
-            border-radius: 8px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            cursor: pointer;
-            border: none;
-            transition: 0.2s;
-        }
-        .btn-add {
-            background: #3b82f6;
-            color: white;
-        }
-        .btn-add:hover {
-            background: #2563eb;
-        }
-        .btn-danger {
-            background: #f1f5f9;
-            color: #dc2626;
-        }
-        .btn-danger:hover {
-            background: #fee2e2;
-        }
-        .btn-generate {
-            background: #0f172a;
-            color: white;
-            padding: 0.75rem 2rem;
-            font-size: 1rem;
-            margin-top: 0.5rem;
-        }
-        .btn-generate:hover {
-            background: #1e293b;
-        }
-        .btn-copy {
-            background: #10b981;
-            color: white;
-            margin-left: 0.5rem;
-        }
-        .btn-copy:hover {
-            background: #059669;
-        }
-        .output-area {
-            margin-top: 1.5rem;
-        }
-        textarea {
-            width: 100%;
-            height: 380px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
-            padding: 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: #f8fafc;
-            resize: vertical;
-        }
-        .flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .row-actions {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-        }
-        .empty-message {
-            color: #94a3b8;
-            font-style: italic;
-            padding: 0.5rem 0;
-        }
-        .note-box {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 8px;
-            padding: 1rem 1.2rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #0c4a6e;
-        }
-        .note-box h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            color: #0369a1;
-        }
-        .note-box ol {
-            padding-left: 1.5rem;
-        }
-        .note-box li {
-            margin-bottom: 0.5rem;
-        }
-        .note-box code {
-            background: #e0f2fe;
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #0c4a6e;
-        }
-        .copy-snippet-btn {
-            background: #0284c7;
-            color: white;
-            padding: 0.4rem 1rem;
-            font-size: 0.8rem;
-            margin-top: 0.75rem;
-        }
-        .copy-snippet-btn:hover {
-            background: #0369a1;
-        }
-        .snippet-instruction {
-            background: #dcfce7;
-            border: 1px solid #bbf7d0;
-            border-radius: 8px;
-            padding: 1rem 1.2rem;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            color: #14532d;
-        }
-        .snippet-instruction h4 {
-            margin-bottom: 0.5rem;
-            font-size: 1rem;
-            color: #15803d;
-        }
-        .snippet-instruction code {
-            background: #bbf7d0;
-            padding: 0.15rem 0.4rem;
-            border-radius: 4px;
-            font-family: monospace;
-            color: #14532d;
-        }
-        .guide-image {
-            width: 100%;
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-        .guide-image:hover {
-            opacity: 0.9;
-        }
-        /* Lightbox Modal */
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-        }
-        .lightbox.active {
-            display: flex;
-        }
-        .lightbox-img {
-            max-width: 90%;
-            max-height: 90%;
-            object-fit: contain;
-            border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            font-size: 2rem;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .lightbox-close:hover {
-            color: #ccc;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f7fb; color: #1e293b; padding: 2rem; }
+        .container { max-width: 960px; margin: 0 auto; background: #ffffff; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); padding: 2rem; }
+        .section { margin-bottom: 2.5rem; }
+        .section h2 { font-size: 1.25rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; color: #334155; }
+        .section h2 span { background: #e2e8f0; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.8rem; font-weight: normal; color: #475569; }
+        .note { background: #e0f2fe; border-left: 4px solid #0284c7; padding: 0.5rem 1rem; margin-bottom: 1rem; border-radius: 6px; font-size: 0.85rem; color: #0c4a6e; }
+        .tip { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 0.6rem 1rem; margin-bottom: 1rem; border-radius: 6px; font-size: 0.85rem; color: #92400e; }
+        .tip code { background: #fde68a; padding: 0.15rem 0.35rem; border-radius: 4px; font-family: monospace; color: #92400e; }
+        .console-copy-area { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+        .console-copy-area span:first-child { font-size: 0.9rem; font-weight: 500; color: #334155; }
+        .console-copy-area code { background: #f1f5f9; padding: 0.3rem 0.6rem; border-radius: 6px; font-family: monospace; font-size: 0.9rem; border: 1px solid #cbd5e1; }
+        .btn-copy-console { background: #f59e0b; color: #fff; padding: 0.35rem 0.8rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer; border: none; font-weight: 500; }
+        .btn-copy-console:hover { background: #d97706; }
+        .console-explanation { font-size: 0.85rem; color: #64748b; margin-bottom: 1.5rem; line-height: 1.5; }
+        .console-explanation code { background: #f1f5f9; padding: 0.15rem 0.35rem; border-radius: 4px; font-family: monospace; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        th { text-align: left; font-weight: 600; font-size: 0.9rem; color: #475569; padding: 0.5rem; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 0.5rem; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        input { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: #fff; }
+        input:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.2); }
+        .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1.2rem; border-radius: 8px; font-weight: 500; font-size: 0.85rem; cursor: pointer; border: none; }
+        .btn-add { background: #3b82f6; color: #fff; } .btn-add:hover { background: #2563eb; }
+        .btn-danger { background: #f1f5f9; color: #dc2626; } .btn-danger:hover { background: #fee2e2; }
+        .btn-generate { background: #0f172a; color: #fff; padding: 0.75rem 2rem; font-size: 1rem; margin-top: 0.5rem; }
+        .btn-copy { background: #10b981; color: #fff; margin-left: 0.5rem; } .btn-copy:hover { background: #059669; }
+        .output-area { margin-top: 1.5rem; }
+        textarea { width: 100%; height: 380px; font-family: 'Courier New', monospace; font-size: 0.85rem; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; resize: vertical; }
+        .flex { display: flex; justify-content: space-between; align-items: center; }
+        .row-actions { display: flex; gap: 0.5rem; justify-content: flex-end; }
+        .empty-message { color: #94a3b8; font-style: italic; padding: 0.5rem 0; }
+        .note-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 1rem 1.2rem; margin-top: 1rem; font-size: 0.9rem; line-height: 1.6; color: #0c4a6e; }
+        .note-box h4 { margin-bottom: 0.5rem; font-size: 1rem; color: #0369a1; }
+        .note-box ol { padding-left: 1.5rem; }
+        .note-box li { margin-bottom: 0.5rem; }
+        .note-box code { background: #e0f2fe; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; color: #0c4a6e; }
+        .copy-snippet-btn { background: #0284c7; color: #fff; padding: 0.4rem 1rem; font-size: 0.8rem; margin-top: 0.75rem; }
+        .copy-snippet-btn:hover { background: #0369a1; }
+        .snippet-instruction { background: #dcfce7; border: 1px solid #bbf7d0; border-radius: 8px; padding: 1rem 1.2rem; margin-top: 1rem; font-size: 0.9rem; line-height: 1.6; color: #14532d; }
+        .snippet-instruction h4 { margin-bottom: 0.5rem; font-size: 1rem; color: #15803d; }
+        .snippet-instruction code { background: #bbf7d0; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; color: #14532d; }
     </style>
 </head>
 <body>
-    <div class="container">
+<div class="container">
 
-        <!-- FILTER OPTION LABEL TRANSLATIONS -->
-        <div class="section">
-            <h2>🏷️ Filter Option Label Translations <span>translateLabelFilter</span></h2>
-            <div class="note">
-                📌 Lưu ý: Không cần tìm source cho phần này.
-            </div>
-            <table id="labelTable">
-                <thead>
-                    <tr>
-                        <th style="width: 45%">Filter Label (English)</th>
-                        <th style="width: 45%">Translated</th>
-                        <th style="width: 10%"></th>
-                    </tr>
-                </thead>
-                <tbody id="labelBody">
-                    <!-- dynamic rows -->
-                </tbody>
-            </table>
-            <button class="btn btn-add" id="addLabelRow">Add Filter Option</button>
-        </div>
-
-        <!-- FILTER VALUE TRANSLATIONS -->
-        <div class="section">
-            <h2>🔢 Filter Value Translations <span>translateValues + source</span></h2>
-            <div class="tip">
-                💡 <strong>Note:</strong> Để tìm đúng <strong>key Source</strong> của <strong>Filter Option</strong>, hãy mở console trình duyệt trên trang collection/search và gõ lệnh bên dưới.
-            </div>
-            <!-- Hình ảnh hướng dẫn có thể click để phóng to -->
-            <img src="Filter_value.png" alt="Hướng dẫn tìm Source trong console" class="guide-image" id="guideImage" />
-            
-            <div class="console-copy-area">
-                <span>Lệnh console:</span>
-                <code>window.rdSearchFilters.filters</code>
-                <button class="btn-copy-console" id="copyConsoleCmd">📋 Sao chép</button>
-                <span id="consoleCmdFeedback" style="color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
-            </div>
-            <div class="console-explanation">
-                – sau đó kiểm tra thuộc tính <code>source</code> của mỗi filter object (ví dụ: <code>"availability"</code>, <code>"vendor"</code>).
-            </div>
-            <table id="valueTable">
-                <thead>
-                    <tr>
-                        <th style="width: 25%">Filter Source of Filter Option</th>
-                        <th style="width: 30%">Filter Value</th>
-                        <th style="width: 30%">Translated</th>
-                        <th style="width: 15%"></th>
-                    </tr>
-                </thead>
-                <tbody id="valueBody">
-                    <!-- dynamic rows -->
-                </tbody>
-            </table>
-            <button class="btn btn-add" id="addValueRow">Add Filter Value</button>
-        </div>
-
-        <!-- GENERATE BUTTON -->
-        <div class="flex">
-            <button class="btn btn-generate" id="generateBtn">⚡ Tạo mã</button>
-            <button class="btn btn-danger" id="clearBtn">🗑️ Xóa tất cả</button>
-        </div>
-
-        <!-- OUTPUT -->
-        <div class="output-area">
-            <textarea id="outputCode" readonly placeholder="Mã được tạo sẽ hiển thị ở đây..."></textarea>
-            <div style="margin-top: 0.5rem;">
-                <button class="btn btn-copy" id="copyBtn">📋 Sao chép vào clipboard</button>
-                <span id="copyFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
-            </div>
-
-            <!-- NEW SNIPPET CREATION NOTE (right after code output) -->
-            <div class="snippet-instruction">
-                <h4>📁 Tạo snippet và dán mã</h4>
-                <p>1. Vào <strong>Snippets</strong> → <strong>Add a new snippet</strong> (tạo file mới).<br>
-                2. Đặt tên file: <code>flintverse-customize.liquid</code><br>
-                3. Dán toàn bộ mã đã tạo ở trên vào file này và lưu lại.</p>
-            </div>
-
-            <!-- IMPLEMENTATION GUIDE (revised) -->
-            <div class="note-box" id="implementationNote">
-                <h4>📌 Cách thêm snippet vào theme</h4>
-                <ol>
-                    <li><strong>Mở file layout</strong><br>
-                        Đi đến <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code>.</li>
-                    <li><strong>Thêm dòng include</strong><br>
-                        Add the following line where global scripts or custom snippets are usually placed:<br>
-                        <code>{% render 'flintverse-customize' %}</code></li>
-                    <li><strong>Đối với store đã được tùy chỉnh sẵn</strong><br>
-                        Snippet <code>flintverse-customize.liquid</code> đã tồn tại. Bạn chỉ cần mở file đó và dán thêm mã mới vào.</li>
-                    <li><strong>Để tắt / gỡ bỏ</strong><br>
-                        Xóa dòng <code>{% render 'flintverse-customize' %}</code> khỏi layout. Không cần thay đổi gì khác.</li>
-                </ol>
-                <button class="btn copy-snippet-btn" id="copyNoteBtn">📋 Sao chép {% render 'flintverse-customize' %}</button>
-                <span id="copyNoteFeedback" style="margin-left: 1rem; color: #10b981; font-weight: 500; display: none;">Đã sao chép!</span>
-            </div>
-        </div>
+    <!-- FILTER OPTION LABEL TRANSLATIONS -->
+    <div class="section">
+        <h2>🏷️ Filter Option Label Translations <span>translateLabelFilter</span></h2>
+        <div class="note">📌 Lưu ý: Không cần tìm source cho phần này.</div>
+        <table id="labelTable">
+            <thead><tr><th style="width:45%">Filter Label (English)</th><th style="width:45%">Translated</th><th style="width:10%"></th></tr></thead>
+            <tbody id="labelBody"></tbody>
+        </table>
+        <button class="btn btn-add" id="addLabelRow">Add Filter Option</button>
     </div>
 
-    <!-- Lightbox Modal -->
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close" id="lightboxClose">&times;</span>
-        <img id="lightboxImg" class="lightbox-img" src="" alt="Ảnh phóng to" />
+    <!-- FILTER VALUE TRANSLATIONS -->
+    <div class="section">
+        <h2>🔢 Filter Value Translations <span>translateValues + source</span></h2>
+        <div class="tip">💡 <strong>Note:</strong> Để tìm đúng <strong>key Source</strong> của <strong>Filter Option</strong>, hãy mở console trình duyệt trên trang collection/search và gõ lệnh bên dưới.</div>
+        <div class="console-copy-area">
+            <span>Lệnh console:</span><code>window.rdSearchFilters.filters</code>
+            <button class="btn-copy-console" id="copyConsoleCmd">📋 Sao chép</button>
+            <span id="consoleCmdFeedback" style="color:#10b981;font-weight:500;display:none;">Đã sao chép!</span>
+        </div>
+        <div class="console-explanation">– sau đó kiểm tra thuộc tính <code>source</code> của mỗi filter object (ví dụ: <code>"availability"</code>, <code>"vendor"</code>).</div>
+        <table id="valueTable">
+            <thead><tr><th style="width:25%">Filter Source of Filter Option</th><th style="width:30%">Filter Value</th><th style="width:30%">Translated</th><th style="width:15%"></th></tr></thead>
+            <tbody id="valueBody"></tbody>
+        </table>
+        <button class="btn btn-add" id="addValueRow">Add Filter Value</button>
     </div>
 
-    <script>
-        (function() {
-            let labelRows = [];
-            let valueRows = [];
+    <!-- STATIC UI LABEL TRANSLATIONS -->
+    <div class="section">
+        <h2>📝 Static UI Label Translations <span>translateStaticLabels</span></h2>
+        <div class="note">📌 Các nhãn tĩnh không nằm trong filter data, ví dụ: "Filter by", "Sort by", "What's New?", "View Items", "products", "From", "To"...</div>
+        <table id="staticTable">
+            <thead><tr><th style="width:45%">Original Text</th><th style="width:45%">Translated</th><th style="width:10%"></th></tr></thead>
+            <tbody id="staticBody"></tbody>
+        </table>
+        <button class="btn btn-add" id="addStaticRow">+ Add Static Label</button>
+    </div>
 
-            const labelBody = document.getElementById('labelBody');
-            const valueBody = document.getElementById('valueBody');
-            const addLabelBtn = document.getElementById('addLabelRow');
-            const addValueBtn = document.getElementById('addValueRow');
-            const generateBtn = document.getElementById('generateBtn');
-            const clearBtn = document.getElementById('clearBtn');
-            const outputCode = document.getElementById('outputCode');
-            const copyBtn = document.getElementById('copyBtn');
-            const copyFeedback = document.getElementById('copyFeedback');
-            const copyNoteBtn = document.getElementById('copyNoteBtn');
-            const copyNoteFeedback = document.getElementById('copyNoteFeedback');
-            const copyConsoleCmd = document.getElementById('copyConsoleCmd');
-            const consoleCmdFeedback = document.getElementById('consoleCmdFeedback');
+    <!-- GENERATE -->
+    <div class="flex">
+        <button class="btn btn-generate" id="generateBtn">⚡ Tạo mã</button>
+        <button class="btn btn-danger" id="clearBtn">🗑️ Xóa tất cả</button>
+    </div>
 
-            // Lightbox elements
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightboxImg');
-            const lightboxClose = document.getElementById('lightboxClose');
-            const guideImage = document.getElementById('guideImage');
+    <!-- OUTPUT -->
+    <div class="output-area">
+        <textarea id="outputCode" readonly placeholder="Mã được tạo sẽ hiển thị ở đây..."></textarea>
+        <div style="margin-top:0.5rem;">
+            <button class="btn btn-copy" id="copyBtn">📋 Sao chép vào clipboard</button>
+            <span id="copyFeedback" style="margin-left:1rem;color:#10b981;font-weight:500;display:none;">Đã sao chép!</span>
+        </div>
+        <div class="snippet-instruction">
+            <h4>📁 Tạo snippet và dán mã</h4>
+            <p>1. Vào <strong>Snippets</strong> → <strong>Add a new snippet</strong> (tạo file mới).<br>2. Đặt tên file: <code>flintverse-customize.liquid</code><br>3. Dán toàn bộ mã đã tạo ở trên vào file này và lưu lại.</p>
+        </div>
+        <div class="note-box">
+            <h4>📌 Cách thêm snippet vào theme</h4>
+            <ol>
+                <li><strong>Mở file layout</strong><br>Đi đến <code>sections/header.liquid</code> hoặc <code>layout/theme.liquid</code>.</li>
+                <li><strong>Thêm dòng include</strong><br>Add the following line where global scripts or custom snippets are usually placed:<br><code>{% render 'flintverse-customize' %}</code></li>
+                <li><strong>Đối với store đã được tùy chỉnh sẵn</strong><br>Snippet <code>flintverse-customize.liquid</code> đã tồn tại. Bạn chỉ cần mở file đó và dán thêm mã mới vào.</li>
+                <li><strong>Để tắt / gỡ bỏ</strong><br>Xóa dòng <code>{% render 'flintverse-customize' %}</code> khỏi layout.</li>
+            </ol>
+            <button class="btn copy-snippet-btn" id="copyNoteBtn">📋 Sao chép {% render 'flintverse-customize' %}</button>
+            <span id="copyNoteFeedback" style="margin-left:1rem;color:#10b981;font-weight:500;display:none;">Đã sao chép!</span>
+        </div>
+    </div>
+</div>
 
-            // Lightbox functionality
-            guideImage.addEventListener('click', function() {
-                lightbox.classList.add('active');
-                lightboxImg.src = this.src;
-            });
-
-            lightboxClose.addEventListener('click', function() {
-                lightbox.classList.remove('active');
-            });
-
-            lightbox.addEventListener('click', function(e) {
-                if (e.target === lightbox) {
-                    lightbox.classList.remove('active');
-                }
-            });
-
-            // Close lightbox on ESC key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && lightbox.classList.contains('active')) {
-                    lightbox.classList.remove('active');
-                }
-            });
-
-            function renderLabelRows() {
-                labelBody.innerHTML = '';
-                if (labelRows.length === 0) {
-                    labelBody.innerHTML = '<tr><td colspan="3" class="empty-message">Chưa có bản dịch nhãn nào.</td></tr>';
-                    return;
-                }
-                labelRows.forEach((row, idx) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><input type="text" class="label-original" value="${escapeHtml(row.original)}" placeholder="ví dụ: Availability" data-index="${idx}"></td>
-                        <td><input type="text" class="label-translated" value="${escapeHtml(row.translated)}" placeholder="ví dụ: 在庫状況" data-index="${idx}"></td>
-                        <td class="row-actions"><button class="btn btn-danger delete-label" data-index="${idx}">✕</button></td>
-                    `;
-                    labelBody.appendChild(tr);
-                });
-                attachLabelEvents();
-            }
-
-            function renderValueRows() {
-                valueBody.innerHTML = '';
-                if (valueRows.length === 0) {
-                    valueBody.innerHTML = '<tr><td colspan="4" class="empty-message">Chưa có bản dịch giá trị nào.</td></tr>';
-                    return;
-                }
-                valueRows.forEach((row, idx) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td><input type="text" class="value-source" value="${escapeHtml(row.source)}" placeholder="ví dụ: availability" data-index="${idx}"></td>
-                        <td><input type="text" class="value-original" value="${escapeHtml(row.original)}" placeholder="ví dụ: In Stock" data-index="${idx}"></td>
-                        <td><input type="text" class="value-translated" value="${escapeHtml(row.translated)}" placeholder="ví dụ: 在庫あり" data-index="${idx}"></td>
-                        <td class="row-actions"><button class="btn btn-danger delete-value" data-index="${idx}">✕</button></td>
-                    `;
-                    valueBody.appendChild(tr);
-                });
-                attachValueEvents();
-            }
-
-            function escapeHtml(text) {
-                return String(text).replace(/[&<>"']/g, function(m) {
-                    if (m === '&') return '&amp;';
-                    if (m === '<') return '&lt;';
-                    if (m === '>') return '&gt;';
-                    if (m === '"') return '&quot;';
-                    if (m === "'") return '&#039;';
-                });
-            }
-
-            function attachLabelEvents() {
-                document.querySelectorAll('.label-original').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.dataset.index;
-                        labelRows[idx].original = this.value;
-                    });
-                });
-                document.querySelectorAll('.label-translated').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.dataset.index;
-                        labelRows[idx].translated = this.value;
-                    });
-                });
-                document.querySelectorAll('.delete-label').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const idx = parseInt(this.dataset.index);
-                        labelRows.splice(idx, 1);
-                        renderLabelRows();
-                    });
-                });
-            }
-
-            function attachValueEvents() {
-                document.querySelectorAll('.value-source').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.dataset.index;
-                        valueRows[idx].source = this.value;
-                    });
-                });
-                document.querySelectorAll('.value-original').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.dataset.index;
-                        valueRows[idx].original = this.value;
-                    });
-                });
-                document.querySelectorAll('.value-translated').forEach(input => {
-                    input.addEventListener('input', function() {
-                        const idx = this.dataset.index;
-                        valueRows[idx].translated = this.value;
-                    });
-                });
-                document.querySelectorAll('.delete-value').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const idx = parseInt(this.dataset.index);
-                        valueRows.splice(idx, 1);
-                        renderValueRows();
-                    });
-                });
-            }
-
-            addLabelBtn.addEventListener('click', () => {
-                labelRows.push({ original: '', translated: '' });
-                renderLabelRows();
-                const lastInput = labelBody.querySelector('tr:last-child .label-original');
-                if (lastInput) lastInput.focus();
-            });
-
-            addValueBtn.addEventListener('click', () => {
-                valueRows.push({ source: '', original: '', translated: '' });
-                renderValueRows();
-                const lastInput = valueBody.querySelector('tr:last-child .value-source');
-                if (lastInput) lastInput.focus();
-            });
-
-            clearBtn.addEventListener('click', () => {
-                if (confirm('Xóa tất cả dữ liệu dịch?')) {
-                    labelRows = [];
-                    valueRows = [];
-                    renderLabelRows();
-                    renderValueRows();
-                    outputCode.value = '';
-                }
-            });
-
-            function generateCode() {
-                const validLabels = labelRows.filter(r => r.original.trim() !== '' && r.translated.trim() !== '');
-                const validValues = valueRows.filter(r => r.source.trim() !== '' && r.original.trim() !== '' && r.translated.trim() !== '');
-
-                let labelCases = '';
-                validLabels.forEach(r => {
-                    labelCases += `            case "${r.original.trim()}":\n                return "${r.translated.trim()}";\n`;
-                });
-
-                let valueCases = '';
-                const valueMap = new Map();
-                validValues.forEach(r => {
-                    valueMap.set(r.original.trim(), r.translated.trim());
-                });
-                valueMap.forEach((trans, orig) => {
-                    valueCases += `            case "${orig}":\n                return "${trans}";\n`;
-                });
-
-                const sourceGroups = new Map();
-                validValues.forEach(r => {
-                    const src = r.source.trim();
-                    if (!sourceGroups.has(src)) sourceGroups.set(src, []);
-                });
-
-                function sanitizeVarName(str) {
-                    return str.replace(/[^a-zA-Z0-9]/g, '_') || 'filter';
-                }
-
-                let sourceBlocks = '';
-                sourceGroups.forEach((_, source) => {
-                    const varName = sanitizeVarName(source) + 'Filter';
-                    sourceBlocks += `        // source: ${source}\n`;
-                    sourceBlocks += `        const ${varName} = (window.rdSearchFilters?.filters ?? []).find(filter => filter.source === '${source}');\n`;
-                    sourceBlocks += `        (${varName}?.values ?? []).map(value => {\n`;
-                    sourceBlocks += `            value.label = translateValues(value.label);\n`;
-                    sourceBlocks += `        });\n\n`;
-                });
-
-                const code = `{% if template.name == 'collection' or template.name == 'search' %}
 <script>
-    function translateValues(value) {
-        switch (value) {
+(function() {
+    let labelRows = [], valueRows = [], staticRows = [];
+
+    const labelBody = document.getElementById('labelBody');
+    const valueBody = document.getElementById('valueBody');
+    const staticBody = document.getElementById('staticBody');
+    const addLabelBtn = document.getElementById('addLabelRow');
+    const addValueBtn = document.getElementById('addValueRow');
+    const addStaticBtn = document.getElementById('addStaticRow');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const outputCode = document.getElementById('outputCode');
+    const copyBtn = document.getElementById('copyBtn');
+    const copyFeedback = document.getElementById('copyFeedback');
+    const copyNoteBtn = document.getElementById('copyNoteBtn');
+    const copyNoteFeedback = document.getElementById('copyNoteFeedback');
+    const copyConsoleCmd = document.getElementById('copyConsoleCmd');
+    const consoleCmdFeedback = document.getElementById('consoleCmdFeedback');
+
+    function renderLabelRows() {
+        labelBody.innerHTML = '';
+        if (!labelRows.length) { labelBody.innerHTML = '<tr><td colspan="3" class="empty-message">Chưa có bản dịch nhãn nào.</td></tr>'; return; }
+        labelRows.forEach((row, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><input class="label-original" value="${escHtml(row.original)}" placeholder="ví dụ: Availability" data-index="${idx}"></td><td><input class="label-translated" value="${escHtml(row.translated)}" placeholder="ví dụ: 在庫状況" data-index="${idx}"></td><td class="row-actions"><button class="btn btn-danger delete-label" data-index="${idx}">✕</button></td>`;
+            labelBody.appendChild(tr);
+        });
+        document.querySelectorAll('.label-original').forEach(inp => inp.addEventListener('input', function(){ labelRows[this.dataset.index].original = this.value; }));
+        document.querySelectorAll('.label-translated').forEach(inp => inp.addEventListener('input', function(){ labelRows[this.dataset.index].translated = this.value; }));
+        document.querySelectorAll('.delete-label').forEach(btn => btn.addEventListener('click', function(){ labelRows.splice(parseInt(this.dataset.index),1); renderLabelRows(); }));
+    }
+    function renderValueRows() {
+        valueBody.innerHTML = '';
+        if (!valueRows.length) { valueBody.innerHTML = '<tr><td colspan="4" class="empty-message">Chưa có bản dịch giá trị nào.</td></tr>'; return; }
+        valueRows.forEach((row, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><input class="value-source" value="${escHtml(row.source)}" placeholder="ví dụ: availability" data-index="${idx}"></td><td><input class="value-original" value="${escHtml(row.original)}" placeholder="ví dụ: In Stock" data-index="${idx}"></td><td><input class="value-translated" value="${escHtml(row.translated)}" placeholder="ví dụ: 在庫あり" data-index="${idx}"></td><td class="row-actions"><button class="btn btn-danger delete-value" data-index="${idx}">✕</button></td>`;
+            valueBody.appendChild(tr);
+        });
+        document.querySelectorAll('.value-source').forEach(inp => inp.addEventListener('input', function(){ valueRows[this.dataset.index].source = this.value; }));
+        document.querySelectorAll('.value-original').forEach(inp => inp.addEventListener('input', function(){ valueRows[this.dataset.index].original = this.value; }));
+        document.querySelectorAll('.value-translated').forEach(inp => inp.addEventListener('input', function(){ valueRows[this.dataset.index].translated = this.value; }));
+        document.querySelectorAll('.delete-value').forEach(btn => btn.addEventListener('click', function(){ valueRows.splice(parseInt(this.dataset.index),1); renderValueRows(); }));
+    }
+    function renderStaticRows() {
+        staticBody.innerHTML = '';
+        if (!staticRows.length) { staticBody.innerHTML = '<tr><td colspan="3" class="empty-message">Chưa có bản dịch nhãn tĩnh nào.</td></tr>'; return; }
+        staticRows.forEach((row, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><input class="static-original" value="${escHtml(row.original)}" placeholder="ví dụ: Filter by" data-index="${idx}"></td><td><input class="static-translated" value="${escHtml(row.translated)}" placeholder="ví dụ: סנן לפי" data-index="${idx}"></td><td class="row-actions"><button class="btn btn-danger delete-static" data-index="${idx}">✕</button></td>`;
+            staticBody.appendChild(tr);
+        });
+        document.querySelectorAll('.static-original').forEach(inp => inp.addEventListener('input', function(){ staticRows[this.dataset.index].original = this.value; }));
+        document.querySelectorAll('.static-translated').forEach(inp => inp.addEventListener('input', function(){ staticRows[this.dataset.index].translated = this.value; }));
+        document.querySelectorAll('.delete-static').forEach(btn => btn.addEventListener('click', function(){ staticRows.splice(parseInt(this.dataset.index),1); renderStaticRows(); }));
+    }
+
+    function escHtml(t) { return String(t).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'})[m]); }
+    function escJsDq(t) { return t.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n'); }
+
+    addLabelBtn.addEventListener('click', ()=>{ labelRows.push({original:'',translated:''}); renderLabelRows(); });
+    addValueBtn.addEventListener('click', ()=>{ valueRows.push({source:'',original:'',translated:''}); renderValueRows(); });
+    addStaticBtn.addEventListener('click', ()=>{ staticRows.push({original:'',translated:''}); renderStaticRows(); });
+    clearBtn.addEventListener('click', ()=>{
+        if (confirm('Xóa tất cả dữ liệu dịch?')) {
+            labelRows = []; valueRows = []; staticRows = [];
+            renderLabelRows(); renderValueRows(); renderStaticRows(); outputCode.value = '';
+        }
+    });
+
+    function generateCode() {
+        const vLabels = labelRows.filter(r => r.original.trim() && r.translated.trim());
+        const vValues = valueRows.filter(r => r.source.trim() && r.original.trim() && r.translated.trim());
+        const vStatic = staticRows.filter(r => r.original.trim() && r.translated.trim());
+
+        // Sort options detection (case-insensitive)
+        const sortOpts = vStatic.filter(r => ['what\'s new?','price low to high','price high to low'].includes(r.original.trim().toLowerCase()));
+        const nonSort = vStatic.filter(r => !['what\'s new?','price low to high','price high to low'].includes(r.original.trim().toLowerCase()));
+
+        let labelCases = vLabels.map(r => `            case "${r.original.trim()}":\n                return "${r.translated.trim()}";`).join('\n');
+        let valueCases = '';
+        const vm = new Map(); vValues.forEach(r => vm.set(r.original.trim(), r.translated.trim()));
+        vm.forEach((t,o) => { valueCases += `            case "${o}":\n                return "${t}";\n`; });
+
+        const sg = new Map(); vValues.forEach(r => sg.set(r.source.trim(), true));
+        const svn = s => s.replace(/[^a-zA-Z0-9]/g,'_')||'filter';
+        let srcBlocks = '';
+        sg.forEach((_, s) => {
+            srcBlocks += `        // source: ${s}\n        const ${svn(s)}Filter = (window.rdSearchFilters?.filters ?? []).find(f => f.source === '${s}');\n        (${svn(s)}Filter?.values ?? []).map(v => { v.label = translateValues(v.label); });\n\n`;
+        });
+
+        // Build translateStaticLabels
+        let sf = '';
+        if (vStatic.length) {
+            sf += '    function translateStaticLabels() {\n';
+            // Non-sort static labels
+            nonSort.forEach(r => {
+                const ol = r.original.trim().toLowerCase();
+                const tr = escJsDq(r.translated.trim());
+                if (ol === 'filter by' || ol === 'filter') {
+                    sf += `      document.querySelectorAll(".search-filters__filter-tree-header, .fdt-offcanvas-content-header, .search-filters__filter-label").forEach(el => { if (el.textContent.trim().toLowerCase() === "${escJsDq(r.original.trim().toLowerCase())}") el.textContent = "${tr}"; });\n`;
+                } else if (ol === 'sort by') {
+                    sf += `      const sortLabel = document.querySelector(".search-filters__sort-label label"); if (sortLabel && sortLabel.textContent.trim().toLowerCase() === "sort by") sortLabel.textContent = "${tr}";\n`;
+                    sf += `      const sortBtn = document.querySelector("#sort-target-option .search-filters__filter-option-title"); if (sortBtn) { const t = sortBtn.textContent.trim().toLowerCase(); if (t === "sort by" || t === "sort") { const icon = sortBtn.querySelector(".svg-wrapper"); sortBtn.innerHTML = icon ? icon.outerHTML + "${tr}" : "${tr}"; } }\n`;
+                } else if (ol === 'sort') {
+                    sf += `      const sortBtn2 = document.querySelector("#sort-target-option .search-filters__filter-option-title"); if (sortBtn2 && sortBtn2.textContent.trim().toLowerCase() === "sort") { const icon = sortBtn2.querySelector(".svg-wrapper"); sortBtn2.innerHTML = icon ? icon.outerHTML + "${tr}" : "${tr}"; }\n`;
+                } else if (ol === 'from') {
+                    sf += `      document.querySelectorAll(".search-filters__filter-option-item-label").forEach(el => { if (el.textContent.trim().toLowerCase().startsWith("from")) el.textContent = el.textContent.replace(/^From/i, "${tr}"); });\n`;
+                } else if (ol === 'to') {
+                    sf += `      document.querySelectorAll(".search-filters__filter-option-item-label").forEach(el => { if (el.textContent.trim().toLowerCase().startsWith("to")) el.textContent = el.textContent.replace(/^To/i, "${tr}"); });\n`;
+                } else if (ol === 'filter and sort') {
+                    sf += `      const fl = document.querySelector(".search-filters__filter-sort-label"); if (fl && fl.textContent.trim().toLowerCase() === "${ol}") fl.textContent = "${tr}";\n`;
+                } else if (ol === 'view items') {
+                    sf += `      const vb = document.querySelector(".fdt-offcanvas-content-button-primary"); if (vb && vb.textContent.trim().toLowerCase() === "view items") vb.textContent = "${tr}";\n`;
+                } else if (ol === 'products') {
+                    sf += `      const ce = document.querySelector(".search-filters__product-count"); if (ce) ce.textContent = ce.textContent.replace(/\\bproducts\\b/gi, "${tr}");\n`;
+                } else {
+                    sf += `      // Generic: "${r.original.trim()}" -> "${tr}"\n      document.querySelectorAll(".search-filters__filter-tree-header, .fdt-offcanvas-content-header, .search-filters__filter-label, .search-filters__filter-sort-label, .search-filters__sort-label label, #sort-target-option .search-filters__filter-option-title, .search-filters__sort-option-item-label, .search-filters__filter-option-item-label, .search-filters__filter-option-item-label-box, .fdt-offcanvas-content-button-primary, .search-filters__product-count").forEach(el => { if (el.textContent.trim().toLowerCase() === "${ol}") el.textContent = "${tr}"; });\n`;
+                }
+            });
+
+            // Sort options block (single selectedSort)
+            if (sortOpts.length) {
+                sf += `      // Sort dropdown options\n      document.querySelectorAll(".search-filters__sort-option-item-label, .search-filters__filter-option-item-label, .search-filters__filter-option-item-label-box").forEach(el => {\n        const t = el.textContent.trim().toLowerCase();\n`;
+                sortOpts.forEach(r => {
+                    sf += `        if (t === "${escJsDq(r.original.trim().toLowerCase())}") el.textContent = "${escJsDq(r.translated.trim())}";\n`;
+                });
+                sf += `      });\n`;
+                sf += `      const selectedSort = document.querySelector(".search-filters__sort-value"); if (selectedSort) {\n        const t = selectedSort.textContent.trim().toLowerCase();\n`;
+                sortOpts.forEach(r => {
+                    sf += `        if (t === "${escJsDq(r.original.trim().toLowerCase())}") selectedSort.textContent = "${escJsDq(r.translated.trim())}";\n`;
+                });
+                sf += `      }\n`;
+            }
+            sf += '    }\n';
+        } else {
+            sf += '    function translateStaticLabels() {} // no static translations\n';
+        }
+
+        // Sort observer (dynamic)
+        let sortObs = '';
+        if (sortOpts.length) {
+            sortObs += `    const sortEl = document.querySelector(".search-filters__sort-value");\n    if (!sortEl) return;\n    if (sortValueObserver) sortValueObserver.disconnect();\n    sortValueObserver = new MutationObserver(() => {\n      const t = sortEl.textContent.trim().toLowerCase();\n`;
+            sortOpts.forEach(r => {
+                sortObs += `      if (t === "${escJsDq(r.original.trim().toLowerCase())}") sortEl.textContent = "${escJsDq(r.translated.trim())}";\n`;
+            });
+            sortObs += `    });\n    sortValueObserver.observe(sortEl, { childList: true, characterData: true, subtree: true });\n`;
+        } else {
+            sortObs += `    // No sort value translations defined.\n`;
+        }
+
+        // Product observer
+        const pRow = vStatic.find(r => r.original.trim().toLowerCase() === 'products');
+        let prodObs = '';
+        if (pRow) {
+            prodObs += `    const countEl = document.querySelector(".search-filters__product-count");\n    if (!countEl) return;\n    if (productCountObserver) productCountObserver.disconnect();\n    productCountObserver = new MutationObserver(() => {\n      productCountObserver.disconnect();\n      if (countEl) countEl.textContent = countEl.textContent.replace(/\\bproducts\\b/gi, "${escJsDq(pRow.translated.trim())}");\n      if (countEl.isConnected) productCountObserver.observe(countEl, { childList: true, characterData: true, subtree: true });\n    });\n    productCountObserver.observe(countEl, { childList: true, characterData: true, subtree: true });\n`;
+        } else {
+            prodObs += `    // No "products" translation defined.\n`;
+        }
+
+        const code = `{% if template.name == 'collection' or template.name == 'search' %}
+<script>
+  function translateValues(value) {
+    switch (value) {
 ${valueCases || '            // no value translations added\n'}
             default:
                 return value;
         }
-    }
-    function translateLabelFilter(label) {
-        switch (label) {
+  }
+  function translateLabelFilter(label) {
+    switch (label) {
 ${labelCases || '            // no label translations added\n'}
             default:
                 return label;
         }
-    }
-    document.addEventListener('findter-sidebar-render-before', () => {
-        // window.rdSearchFilters.filters để lấy key (original comment)
-        const filters = window.rdSearchFilters?.filters ?? [];
-        if (filters.length == 0) return;
+  }
+${sf}
+  let sortValueObserver = null;
+  let mobileTriggerObserver = null;
+  let productCountObserver = null;
 
-        // Translate filter option labels
-        filters.map(filter => {
-            filter.label = translateLabelFilter(filter.label);
-        });
+  function observeSortValue() {
+${sortObs}
+  }
 
-        // Translate filter values by source
-${sourceBlocks || '        // no value sources specified\n'}
+  function observeMobileTrigger() {
+    const trigger = document.querySelector(".search-filters__open");
+    if (!trigger) return;
+    if (mobileTriggerObserver) mobileTriggerObserver.disconnect();
+    mobileTriggerObserver = new MutationObserver(() => {
+      mobileTriggerObserver.disconnect();
+      translateStaticLabels();
+      if (trigger.isConnected) mobileTriggerObserver.observe(trigger, { childList: true, subtree: true });
     });
+    mobileTriggerObserver.observe(trigger, { childList: true, subtree: true });
+  }
+
+  function observeProductCount() {
+${prodObs}
+  }
+
+  document.addEventListener("findter-sidebar-render-before", () => {
+    // window.rdSearchFilters.filters để lấy key (original comment)
+    const filters = window.rdSearchFilters?.filters ?? [];
+    if (filters.length == 0) return;
+
+    filters.map(filter => { filter.label = translateLabelFilter(filter.label); });
+
+${srcBlocks || '        // no value sources specified\n'}
+    setTimeout(() => {
+      translateStaticLabels();
+      observeSortValue();
+      observeMobileTrigger();
+      observeProductCount();
+      setTimeout(translateStaticLabels, 200);
+    }, 0);
+  });
 <\/script>
 {% endif %}`;
 
-                outputCode.value = code;
-            }
+        outputCode.value = code;
+    }
 
-            function copyToClipboard(text) {
-                if (navigator.clipboard && window.isSecureContext) {
-                    return navigator.clipboard.writeText(text);
-                }
-                return new Promise((resolve, reject) => {
-                    const textArea = document.createElement('textarea');
-                    textArea.value = text;
-                    textArea.style.position = 'fixed';
-                    textArea.style.left = '-9999px';
-                    document.body.appendChild(textArea);
-                    textArea.focus();
-                    textArea.select();
-                    try {
-                        const success = document.execCommand('copy');
-                        if (success) {
-                            resolve();
-                        } else {
-                            reject(new Error('execCommand failed'));
-                        }
-                    } catch (err) {
-                        reject(err);
-                    } finally {
-                        document.body.removeChild(textArea);
-                    }
-                });
-            }
+    function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+        return new Promise((res, rej) => {
+            const ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+            document.body.appendChild(ta); ta.focus(); ta.select();
+            try { document.execCommand('copy') ? res() : rej(new Error('execCommand')); }
+            catch(e) { rej(e); } finally { document.body.removeChild(ta); }
+        });
+    }
+    function fb(el) { el.style.display = 'inline'; setTimeout(() => el.style.display = 'none', 2000); }
 
-            function showFeedback(element) {
-                element.style.display = 'inline';
-                setTimeout(() => { element.style.display = 'none'; }, 2000);
-            }
+    generateBtn.addEventListener('click', generateCode);
+    copyBtn.addEventListener('click', () => { if (!outputCode.value) return; copyText(outputCode.value).then(() => fb(copyFeedback)).catch(() => alert('Không thể sao chép.')); });
+    copyNoteBtn.addEventListener('click', () => { copyText("{% render 'flintverse-customize' %}").then(() => fb(copyNoteFeedback)).catch(() => alert('Không thể sao chép.')); });
+    copyConsoleCmd.addEventListener('click', () => { copyText("window.rdSearchFilters.filters").then(() => fb(consoleCmdFeedback)).catch(() => alert('Không thể sao chép.')); });
 
-            generateBtn.addEventListener('click', generateCode);
-
-            copyBtn.addEventListener('click', () => {
-                if (!outputCode.value) return;
-                copyToClipboard(outputCode.value).then(() => {
-                    showFeedback(copyFeedback);
-                }).catch(() => {
-                    alert('Không thể sao chép tự động. Vui lòng chọn và sao chép thủ công.');
-                });
-            });
-
-            copyNoteBtn.addEventListener('click', () => {
-                const snippetInclude = "{% render 'flintverse-customize' %}";
-                copyToClipboard(snippetInclude).then(() => {
-                    showFeedback(copyNoteFeedback);
-                }).catch(() => {
-                    alert('Không thể sao chép tự động. Vui lòng chọn và sao chép thủ công.');
-                });
-            });
-
-            copyConsoleCmd.addEventListener('click', () => {
-                const consoleCmd = "window.rdSearchFilters.filters";
-                copyToClipboard(consoleCmd).then(() => {
-                    showFeedback(consoleCmdFeedback);
-                }).catch(() => {
-                    alert('Không thể sao chép tự động. Vui lòng chọn và sao chép thủ công.');
-                });
-            });
-
-            // Initial empty state
-            renderLabelRows();
-            renderValueRows();
-        })();
-    </script>
+    renderLabelRows();
+    renderValueRows();
+    renderStaticRows();
+})();
+</script>
 </body>
 </html>
